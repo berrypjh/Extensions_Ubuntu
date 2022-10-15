@@ -5,6 +5,7 @@ import { CONST, rpc, sc, wallet, tx, u } from "@cityofzion/neon-core";
 // import { checkBalance } from "../util/checkBalance";
 import Axios from "axios";
 import Layout from "./Layout";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Page = () => {
   const [balance, setBalance] = useState();
@@ -53,11 +54,19 @@ const Page = () => {
   return (
     <>
       <Layout>
-        <Link component={Home}>홈으로 가기</Link>
-        <h2>보내기</h2>
-        <div>받는 주소: {sendAddress}</div>
+        <div style={{ marginTop: "16px" }}>
+          <Link component={Home}>
+            <ArrowBackIcon style={{ width: "16px" }} />
+          </Link>
+          <span style={{ fontSize: "16px" }}>보내기</span>
+          <hr style={{ marginTop: "17px", backgroundColor: "#dada" }} />
+        </div>
+        <h3>보내는 주소: {sendAddress}</h3>
+        <h3>받는 주소: {sendAddress}</h3>
         <h3>NEO 잔액 : {neoAmount && neoAmount} NEO</h3>
-        <h3>GAS 잔액 : {gasAmount && gasAmount} GAS</h3>
+        {/* <h3>GAS 잔액 : {gasAmount && gasAmount} GAS</h3> */}
+        <h3>전송 수량 : 0 NEO</h3>
+        <h3>예상 수수료? : {gasAmount && gasAmount} GAS</h3>
       </Layout>
     </>
   );

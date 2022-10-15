@@ -73,16 +73,22 @@ const Home = () => {
             </span>
             <hr style={{ marginTop: "20px", backgroundColor: "#dada" }} />
           </div>
-          <div style={{ marginTop: "50px" }}>
+          <div style={{ marginTop: "45px" }}>
             <img width="50px" height="50px" src="neo.png" alt="neo gas"></img>
             <h2>NEO</h2>
             <h3>{neoAmount && neoAmount} NEO</h3>
-            <img width="50px" height="50px" src="gas.png" alt="neo gas"></img>
+            <img
+              style={{ marginTop: "20px" }}
+              width="50px"
+              height="50px"
+              src="gas.png"
+              alt="neo gas"
+            ></img>
             <h2>GAS</h2>
             <h3>{gasAmount && gasAmount} GAS</h3>
           </div>
         </div>
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <div style={{ textAlign: "center", marginTop: "40px" }}>
           <Link component={Page} style={{ textDecoration: "none" }}>
             <Button variant="contained">전송</Button>
           </Link>
