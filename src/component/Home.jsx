@@ -1,72 +1,93 @@
-import React from "react";
-import { wallet as wallet2 } from "@cityofzion/neon-js";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-chrome-extension-router";
+import Layout from "./Layout";
 import Page from "./Page";
-import { Observable, from, Observer, of, Subject, forkJoin } from "rxjs";
-import { map } from "rxjs/operators";
-
-export function str2ab(str) {
-  if (typeof str !== "string") {
-    throw new Error(`str2ab expected a string but got ${typeof str} instead.`);
-  }
-  const result = new Uint8Array(str.length);
-  for (let i = 0, strLen = str.length; i < strLen; i++) {
-    result[i] = str.charCodeAt(i);
-  }
-  return result;
-}
-
-export function ab2hexstring(arr) {
-  if (typeof arr !== "object") {
-    throw new Error(`ab2hexstring expects an array. Input was ${arr}`);
-  }
-  let result = "";
-  const intArray = new Uint8Array(arr);
-  for (const i of intArray) {
-    let str = i.toString(16);
-    str = str.length === 0 ? "00" : str.length === 1 ? "0" + str : str;
-    result += str;
-  }
-  return result;
-}
-
-function str2hexstring(str) {
-  return ab2hexstring(str2ab(str));
-}
+import Button from "@mui/material/Button";
+import Axios from "axios";
 
 const Home = () => {
-  const parameter = { message: "0x500489A3cC124Ce3F21197b2E1859DbD584D8FA5" };
-  const parameterHexString = str2hexstring(parameter.message);
-  const lengthHex = (parameterHexString.length / 2)
-    .toString(16)
-    .padStart(2, "0");
-  const messageHex = lengthHex + parameterHexString;
-  const serializedTransaction = "010001f0" + messageHex + "0000";
-  console.log(serializedTransaction);
+  const [balance, setBalance] = useState();
+  const [myAddress, setMyAddress] = useState("NeXa85P..."); // NeXa85Pzhyz4dErY8VxyAKzYTARpNgpWhJ
+  const [neoAmount, setNeoAmount] = useState(0);
+  const [gasAmount, setGasAmount] = useState(0);
 
-  const account = new wallet2.Account();
-  console.log(account);
-  const wif = account.WIF;
-  console.log(wif);
-  const w = new wallet2.Wallet({
-    name: "NeoLineUser",
-  });
+  const checkBalance = async () => {
+    let tt = await Axios.post("http://localhost:50012", {
+      jsonrpc: "2.0",
+      method: "getnep17balances",
+      params: ["NeXa85Pzhyz4dErY8VxyAKzYTARpNgpWhJ"],
+      id: 1,
+    });
 
-  w.addAccount(account);
-  console.log(w);
-  let re = from(w.accounts[0].encrypt("111")).pipe(
-    map(() => {
-      w.accounts[0].wif = wif;
-      return w;
-    })
-  );
-  console.log(re);
+    console.log(tt.data.result);
+    setBalance(tt.data.result);
+  };
+
+  useEffect(() => {
+    checkBalance();
+  }, []);
+
+  useEffect(() => {
+    console.log(balance);
+    if (balance) {
+      let array = balance.balance;
+      console.log(array);
+      for (let i = 0; i < array.length; i++) {
+        switch (array[i].symbol) {
+          case "NEO":
+            setNeoAmount(array[i].amount);
+            break;
+          case "GAS":
+            setGasAmount(array[i].amount);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }, [balance]);
 
   return (
     <>
-      <Link component={Page}>2 페이지로 가기</Link>
-      <div>Home</div>
-      <div>Home</div>
+      <Layout>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ marginTop: "20px" }}>
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bolder",
+                  fontSize: "16px",
+                  marginLeft: "20px",
+                }}
+              >
+                Account 1
+              </span>
+              <span style={{ fontSize: "16px", marginRight: "20px" }}>
+                {myAddress}
+              </span>
+            </span>
+            <hr style={{ marginTop: "20px", backgroundColor: "#dada" }} />
+          </div>
+          <div style={{ marginTop: "50px" }}>
+            <img width="50px" height="50px" src="neo.png" alt="neo gas"></img>
+            <h2>NEO</h2>
+            <h3>{neoAmount && neoAmount} NEO</h3>
+            <img width="50px" height="50px" src="gas.png" alt="neo gas"></img>
+            <h2>GAS</h2>
+            <h3>{gasAmount && gasAmount} GAS</h3>
+          </div>
+        </div>
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <Link component={Page} style={{ textDecoration: "none" }}>
+            <Button variant="contained">전송</Button>
+          </Link>
+        </div>
+      </Layout>
     </>
   );
 };
