@@ -7,7 +7,7 @@ import Axios from "axios";
 
 const Home = () => {
   const [balance, setBalance] = useState();
-  const [myAddress, setMyAddress] = useState("NeXa85P..."); // NeXa85Pzhyz4dErY8VxyAKzYTARpNgpWhJ
+  const [myAddress, setMyAddress] = useState("NNWmHw..."); // NNWmHwuDsAzozvE2NmPnu5krmorVGqgVKs
   const [neoAmount, setNeoAmount] = useState(0);
   const [gasAmount, setGasAmount] = useState(0);
 
@@ -15,7 +15,7 @@ const Home = () => {
     let tt = await Axios.post("http://localhost:50012", {
       jsonrpc: "2.0",
       method: "getnep17balances",
-      params: ["NeXa85Pzhyz4dErY8VxyAKzYTARpNgpWhJ"],
+      params: ["NNWmHwuDsAzozvE2NmPnu5krmorVGqgVKs"],
       id: 1,
     });
 
@@ -28,10 +28,8 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(balance);
     if (balance) {
       let array = balance.balance;
-      console.log(array);
       for (let i = 0; i < array.length; i++) {
         switch (array[i].symbol) {
           case "NEO":

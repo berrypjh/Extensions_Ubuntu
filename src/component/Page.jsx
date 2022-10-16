@@ -1,16 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-chrome-extension-router";
 import Home from "./Home";
-import { CONST, rpc, sc, wallet, tx, u } from "@cityofzion/neon-core";
 // import { checkBalance } from "../util/checkBalance";
+import * as Neon from "@cityofzion/neon-js";
 import Axios from "axios";
 import Layout from "./Layout";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import TextField from "@mui/material/TextField";
+import { Button } from "@mui/material";
+
+const tx = () => {
+  const url = "http://localhost:50012";
+  const privateKey =
+    "9362faa58374f407faf359861fa1751f3129caaacfaf6a595eb1fdd3d234e2f5";
+  const fromAddress = "NNjbSCLoL8aiT3FNVpy7hNygHLAqjz6Mx2";
+
+  const facadePromise = Neon.api.NetworkFacade.fromConfig({
+    node: url,
+  });
+
+  const intent = {
+    from: new Neon.wallet.Account(privateKey),
+    to: fromAddress,
+    decimalAmt: 10000,
+    contractHash: Neon.CONST.NATIVE_CONTRACT_HASH.NeoToken,
+  };
+
+  const signingConfig = {
+    signingCallback: Neon.api.signWithAccount(
+      new Neon.wallet.Account(privateKey)
+    ),
+  };
+
+  let tt = new Neon.wallet.Account(privateKey);
+  console.log(tt);
+
+  facadePromise
+    .then((facade) => facade.transferToken([intent], signingConfig))
+    .then((txid) => console.log(txid))
+    .catch((err) => console.log(err));
+};
 
 const Page = () => {
   const [balance, setBalance] = useState();
   const [sendAddress, setSendAddress] = useState(
-    "NeXa85Pzhyz4dErY8VxyAKzYTARpNgpWhJ"
+    "NNWmHwuDsAzozvE2NmPnu5krmorVGqgVKs"
   );
   const [neoAmount, setNeoAmount] = useState(0);
   const [gasAmount, setGasAmount] = useState(0);
@@ -19,7 +53,7 @@ const Page = () => {
     let tt = await Axios.post("http://localhost:50012", {
       jsonrpc: "2.0",
       method: "getnep17balances",
-      params: ["NeXa85Pzhyz4dErY8VxyAKzYTARpNgpWhJ"],
+      params: ["NNWmHwuDsAzozvE2NmPnu5krmorVGqgVKs"],
       id: 1,
     });
 
@@ -51,6 +85,10 @@ const Page = () => {
     }
   }, [balance]);
 
+  const onClickSubmit = () => {
+    tx();
+  };
+
   return (
     <>
       <Layout>
@@ -61,12 +99,43 @@ const Page = () => {
           <span style={{ fontSize: "16px" }}>보내기</span>
           <hr style={{ marginTop: "17px", backgroundColor: "#dada" }} />
         </div>
-        <h3>보내는 주소: {sendAddress}</h3>
-        <h3>받는 주소: {sendAddress}</h3>
-        <h3>NEO 잔액 : {neoAmount && neoAmount} NEO</h3>
-        {/* <h3>GAS 잔액 : {gasAmount && gasAmount} GAS</h3> */}
-        <h3>전송 수량 : 0 NEO</h3>
+        <TextField
+          id="outlined-read-only-input"
+          label="보내는 주소"
+          defaultValue={sendAddress}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+        <TextField
+          required
+          label="받는 주소"
+          id="outlined-required"
+          defaultValue=""
+        />
+        <TextField
+          id="outlined-number"
+          label="NEO 수량"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          helperText={<h5>나의 잔액 : {neoAmount && neoAmount} NEO</h5>}
+        />
+        <TextField
+          id="outlined-number"
+          label="GAS 수량"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          helperText={<h5>나의 잔액 : {gasAmount && gasAmount} GAS</h5>}
+        />
+
         <h3>예상 수수료? : {gasAmount && gasAmount} GAS</h3>
+        <Button variant="contained" onClick={onClickSubmit}>
+          확인
+        </Button>
       </Layout>
     </>
   );
