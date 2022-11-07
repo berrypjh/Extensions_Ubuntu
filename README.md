@@ -1,2 +1,0 @@
-# React_Extensions_Ubuntu
-React_Extensions_Ubuntu 연습
