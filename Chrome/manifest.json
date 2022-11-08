@@ -1,0 +1,25 @@
+{
+    "manifest_version" : 3,
+    "name": "My Extension",
+    "version": "1.0.0",
+    "description": "Hello",
+    "icons": {
+        "16": "logo.png",
+        "48": "logo.png",
+        "128": "logo.png"
+    },
+    "action": {
+        "default_icon": {
+            "16": "logo.png",
+            "48": "logo.png",
+            "128": "logo.png"
+        },
+        "default_title": "Extension Action Title",
+        "default_popup": "popup.html"
+    },
+    "options_page": "options.html",
+    "permissions": ["storage", "alarms"],
+    "background": {
+        "service_worker": "background.js"
+    }
+}
