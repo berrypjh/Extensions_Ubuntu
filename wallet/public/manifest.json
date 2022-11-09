@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "React Extensions",
+  "description": "React!",
+  "version": "1.0.0",
+  "icons": {
+    "16": "lisk.png",
+    "48": "lisk.png",
+    "128": "lisk.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "lisk.png",
+      "48": "lisk.png",
+      "128": "lisk.png"
+    },
+    "default_popup": "popup.html",
+    "default_title": "React Extension"
+  },
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
